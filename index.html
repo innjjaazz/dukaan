@@ -60,16 +60,16 @@
 
     <div class="card">
         <h2>ربط دومين مخصص - Vercel API</h2>
-        <p>قم بإدخال بيانات الاعتماد واختبار ربط الدومينات مباشرة:</p>
+        <p>قم بإدخال بياناتك لاختبار ربط الدومين بالمشروع مباشرة:</p>
 
         <form id="domainForm">
             <div class="form-group">
-                <label for="vercelToken">Vercel API Token:</label>
+                <label for="vercelToken">Vercel API Token الجديد (يبدأ بـ vcp_):</label>
                 <input type="password" id="vercelToken" placeholder="vcp_xxxxxxxxxxxx" required>
             </div>
 
             <div class="form-group">
-                <label for="projectId">Project ID (معرف المشروع):</label>
+                <label for="projectId">Project ID الخاص بالمشروع (يبدأ بـ prj_):</label>
                 <input type="text" id="projectId" placeholder="prj_xxxxxxxxxxxx" required>
             </div>
 
@@ -101,6 +101,7 @@
             resultBox.style.display = 'none';
 
             try {
+                // طلب الربط المباشر المخصص للحسابات الشخصية بدون teamId
                 const response = await fetch(`https://api.vercel.com/v9/projects/${projectId}/domains`, {
                     method: 'POST',
                     headers: {
@@ -116,14 +117,15 @@
                     showResult(`
                         <strong>تم ربط الدومين بنجاح! 🎉</strong><br><br>
                         الدومين: <code>${data.name}</code><br>
-                        وجه سجل CNAME إلى: <code>cname.vercel-dns.com</code>
+                        الخطوة التالية: اطلب من التاجر توجيه سجل CNAME إلى:<br>
+                        <code>cname.vercel-dns.com</code>
                     `, true);
                 } else {
                     const errorMsg = data.error ? data.error.message : 'فشل الربط، تحقق من صحة البيانات';
                     showResult(`خطأ من Vercel: ${errorMsg}`, false);
                 }
             } catch (error) {
-                showResult('حدث خطأ في الاتصال، قد يكون السبب حظر CORS من المتصفح عند الاستدعاء المباشر', false);
+                showResult('حدث خطأ في الاتصال بالشبكة أو حظر CORS', false);
             } finally {
                 submitBtn.disabled = false;
                 submitBtn.textContent = 'ربط الدومين الآن';
