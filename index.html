@@ -175,7 +175,7 @@
             <div class="form-group">
                 <label for="projectId">Project ID (معرف المشروع):</label>
                 <input type="text" id="projectId" placeholder="prj_xxxxxxxxxxxxxxxxxxxx" required>
-                <div class="hint">يتم استخراجه من Project Settings ➔ General.</div>
+                <div class="hint">يتم استخراجه من إعدادات المشروع ➔ عام (General).</div>
             </div>
 
             <div class="remember-group">
@@ -197,6 +197,9 @@
     </div>
 
     <script>
+        // معرّف الفريق التابع لحسابك
+        const TEAM_ID = "team_s7oNokqtDyYu1UzMBtHuJgnU";
+
         const form = document.getElementById('domainForm');
         const submitBtn = document.getElementById('submitBtn');
         const resultBox = document.getElementById('resultBox');
@@ -220,7 +223,7 @@
             const projectId = projectIdInput.value.trim();
             const domainName = document.getElementById('domainName').value.trim();
 
-            // حفظ الإعدادات في متصفح المستخدم إذا كان الخيار مفعلاً
+            // حفظ الإعدادات في متصفح المستخدم عند تحديد الخيار
             if (saveCheckbox.checked) {
                 localStorage.setItem('vcp_token', token);
                 localStorage.setItem('vcp_project_id', projectId);
@@ -234,7 +237,8 @@
             resultBox.style.display = 'none';
 
             try {
-                const response = await fetch(`https://api.vercel.com/v9/projects/${projectId}/domains`, {
+                // إضافة teamId لتوافق طلبات حسابات الفرق (Team Scopes)
+                const response = await fetch(`https://api.vercel.com/v9/projects/${projectId}/domains?teamId=${TEAM_ID}`, {
                     method: 'POST',
                     headers: {
                         'Authorization': `Bearer ${token}`,
